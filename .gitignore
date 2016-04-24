@@ -1,0 +1,6 @@
+#python
+*.pyc
+*.png
+*.ui
+.spyderproject
+*.log

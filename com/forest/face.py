@@ -1,0 +1,168 @@
+# -*- coding: utf-8 -*-
+
+# Form implementation generated from reading ui file 'untitled.ui'
+#
+# Created by: PyQt4 UI code generator 4.11.4
+#
+# WARNING! All changes made in this file will be lost!
+
+from PyQt4 import QtCore, QtGui
+import stage2
+try:
+    _fromUtf8 = QtCore.QString.fromUtf8
+except AttributeError:
+    def _fromUtf8(s):
+        return s
+
+try:
+    _encoding = QtGui.QApplication.UnicodeUTF8
+    def _translate(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig, _encoding)
+except AttributeError:
+    def _translate(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig)
+
+class Ui_MainWindow(object):
+    def setupUi(self, MainWindow):
+        MainWindow.setObjectName(_fromUtf8("MainWindow"))
+        MainWindow.resize(937, 466)
+        self.centralwidget = QtGui.QWidget(MainWindow)
+        self.centralwidget.setObjectName(_fromUtf8("centralwidget"))
+        self.toolBox = QtGui.QToolBox(self.centralwidget)
+        self.toolBox.setGeometry(QtCore.QRect(10, 10, 141, 411))
+        self.toolBox.setLayoutDirection(QtCore.Qt.RightToLeft)
+        self.toolBox.setObjectName(_fromUtf8("toolBox"))
+        self.page = QtGui.QWidget()
+        self.page.setGeometry(QtCore.QRect(0, 0, 141, 333))
+        self.page.setObjectName(_fromUtf8("page"))
+        self.pushButton = QtGui.QPushButton(self.page)
+        self.pushButton.setGeometry(QtCore.QRect(10, 0, 121, 31))
+        self.pushButton.setObjectName(_fromUtf8("pushButton"))
+        self.pushButton_2 = QtGui.QPushButton(self.page)
+        self.pushButton_2.setGeometry(QtCore.QRect(10, 30, 121, 31))
+        self.pushButton_2.setObjectName(_fromUtf8("pushButton_2"))
+        self.pushButton_3 = QtGui.QPushButton(self.page)
+        self.pushButton_3.setGeometry(QtCore.QRect(10, 60, 121, 31))
+        self.pushButton_3.setObjectName(_fromUtf8("pushButton_3"))
+        self.pushButton_4 = QtGui.QPushButton(self.page)
+        self.pushButton_4.setGeometry(QtCore.QRect(10, 90, 121, 31))
+        self.pushButton_4.setObjectName(_fromUtf8("pushButton_4"))
+        self.pushButton_5 = QtGui.QPushButton(self.page)
+        self.pushButton_5.setGeometry(QtCore.QRect(10, 120, 121, 31))
+        self.pushButton_5.setObjectName(_fromUtf8("pushButton_5"))
+        self.pushButton_6 = QtGui.QPushButton(self.page)
+        self.pushButton_6.setGeometry(QtCore.QRect(10, 150, 121, 31))
+        self.pushButton_6.setObjectName(_fromUtf8("pushButton_6"))
+        self.pushButton_7 = QtGui.QPushButton(self.page)
+        self.pushButton_7.setGeometry(QtCore.QRect(10, 290, 121, 31))
+        self.pushButton_7.setObjectName(_fromUtf8("pushButton_7"))
+        self.toolBox.addItem(self.page, _fromUtf8(""))
+        self.page_2 = QtGui.QWidget()
+        self.page_2.setGeometry(QtCore.QRect(0, 0, 141, 333))
+        self.page_2.setObjectName(_fromUtf8("page_2"))
+        self.pushButton_8 = QtGui.QPushButton(self.page_2)
+        self.pushButton_8.setGeometry(QtCore.QRect(10, 0, 121, 31))
+        self.pushButton_8.setText(_fromUtf8(""))
+        self.pushButton_8.setObjectName(_fromUtf8("pushButton_8"))
+        self.toolBox.addItem(self.page_2, _fromUtf8(""))
+        self.page_3 = QtGui.QWidget()
+        self.page_3.setObjectName(_fromUtf8("page_3"))
+        self.pushButton_9 = QtGui.QPushButton(self.page_3)
+        self.pushButton_9.setGeometry(QtCore.QRect(10, 0, 121, 31))
+        self.pushButton_9.setObjectName(_fromUtf8("pushButton_9"))
+        self.pushButton_10 = QtGui.QPushButton(self.page_3)
+        self.pushButton_10.setGeometry(QtCore.QRect(10, 30, 121, 31))
+        self.pushButton_10.setObjectName(_fromUtf8("pushButton_10"))
+        self.toolBox.addItem(self.page_3, _fromUtf8(""))
+        self.frame = QtGui.QFrame(self.centralwidget)
+        self.frame.setGeometry(QtCore.QRect(160, 10, 771, 411))
+        self.frame.setFrameShape(QtGui.QFrame.StyledPanel)
+        self.frame.setFrameShadow(QtGui.QFrame.Raised)
+        self.frame.setObjectName(_fromUtf8("frame"))
+        self.tableWidget_2 = QtGui.QTableWidget(self.frame)
+        self.tableWidget_2.setGeometry(QtCore.QRect(0, 0, 771, 411))
+        self.tableWidget_2.setObjectName(_fromUtf8("tableWidget_2"))
+        self.tableWidget_2.setColumnCount(11)
+        self.tableWidget_2.setRowCount(0)
+        item = QtGui.QTableWidgetItem()
+        self.tableWidget_2.setHorizontalHeaderItem(0, item)
+        item = QtGui.QTableWidgetItem()
+        self.tableWidget_2.setHorizontalHeaderItem(1, item)
+        item = QtGui.QTableWidgetItem()
+        self.tableWidget_2.setHorizontalHeaderItem(2, item)
+        item = QtGui.QTableWidgetItem()
+        self.tableWidget_2.setHorizontalHeaderItem(3, item)
+        item = QtGui.QTableWidgetItem()
+        self.tableWidget_2.setHorizontalHeaderItem(4, item)
+        item = QtGui.QTableWidgetItem()
+        self.tableWidget_2.setHorizontalHeaderItem(5, item)
+        item = QtGui.QTableWidgetItem()
+        self.tableWidget_2.setHorizontalHeaderItem(6, item)
+        item = QtGui.QTableWidgetItem()
+        self.tableWidget_2.setHorizontalHeaderItem(7, item)
+        item = QtGui.QTableWidgetItem()
+        self.tableWidget_2.setHorizontalHeaderItem(8, item)
+        item = QtGui.QTableWidgetItem()
+        self.tableWidget_2.setHorizontalHeaderItem(9, item)
+        item = QtGui.QTableWidgetItem()
+        self.tableWidget_2.setHorizontalHeaderItem(10, item)
+        MainWindow.setCentralWidget(self.centralwidget)
+        self.menubar = QtGui.QMenuBar(MainWindow)
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 937, 23))
+        self.menubar.setObjectName(_fromUtf8("menubar"))
+        MainWindow.setMenuBar(self.menubar)
+        self.statusbar = QtGui.QStatusBar(MainWindow)
+        self.statusbar.setObjectName(_fromUtf8("statusbar"))
+        MainWindow.setStatusBar(self.statusbar)
+
+        self.retranslateUi(MainWindow)
+        self.toolBox.setCurrentIndex(0)
+        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+
+    def retranslateUi(self, MainWindow):
+        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow", None))
+        self.pushButton.setText(_translate("MainWindow", "选择历史日数据", None))
+        self.pushButton_2.setText(_translate("MainWindow", "待预测日数据", None))
+        self.pushButton_3.setText(_translate("MainWindow", "选择相似日算法", None))
+        self.pushButton_4.setText(_translate("MainWindow", "选择相似日", None))
+        self.pushButton_5.setText(_translate("MainWindow", "选择智能算法", None))
+        self.pushButton_6.setText(_translate("MainWindow", "查看结果", None))
+        self.pushButton_7.setText(_translate("MainWindow", "重置数据", None))
+        self.toolBox.setItemText(self.toolBox.indexOf(self.page), _translate("MainWindow", "进行电力负荷预测", None))
+        self.toolBox.setItemText(self.toolBox.indexOf(self.page_2), _translate("MainWindow", "查看电力负荷预测数据", None))
+        self.pushButton_9.setText(_translate("MainWindow", "相似日算法", None))
+        self.pushButton_10.setText(_translate("MainWindow", "预测算法", None))
+        self.toolBox.setItemText(self.toolBox.indexOf(self.page_3), _translate("MainWindow", "查看算法", None))
+        item = self.tableWidget_2.horizontalHeaderItem(0)
+        item.setText(_translate("MainWindow", "日期", None))
+        item = self.tableWidget_2.horizontalHeaderItem(1)
+        item.setText(_translate("MainWindow", "天气类型", None))
+        item = self.tableWidget_2.horizontalHeaderItem(2)
+        item.setText(_translate("MainWindow", "新建列", None))
+        item = self.tableWidget_2.horizontalHeaderItem(3)
+        item.setText(_translate("MainWindow", "平均气压", None))
+        item = self.tableWidget_2.horizontalHeaderItem(4)
+        item.setText(_translate("MainWindow", "最高气压", None))
+        item = self.tableWidget_2.horizontalHeaderItem(5)
+        item.setText(_translate("MainWindow", "最低气压", None))
+        item = self.tableWidget_2.horizontalHeaderItem(6)
+        item.setText(_translate("MainWindow", "平均气温", None))
+        item = self.tableWidget_2.horizontalHeaderItem(7)
+        item.setText(_translate("MainWindow", "最低气温", None))
+        item = self.tableWidget_2.horizontalHeaderItem(8)
+        item.setText(_translate("MainWindow", "20-20时降雨量", None))
+        item = self.tableWidget_2.horizontalHeaderItem(9)
+        item.setText(_translate("MainWindow", "新建列", None))
+        item = self.tableWidget_2.horizontalHeaderItem(10)
+        item.setText(_translate("MainWindow", "日照时数", None))
+
+        
+if __name__ == "__main__":
+    import sys
+    app = QtGui.QApplication(sys.argv)
+    MainWindow = QtGui.QMainWindow()
+    ui = Ui_MainWindow()
+    ui.setupUi(MainWindow)
+    MainWindow.show()
+    sys.exit(app.exec_())
+
