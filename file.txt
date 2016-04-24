@@ -8,11 +8,6 @@
 	    </tr>
 
 	    <tr>
-		<td>email</td>
-		<td><input name="email"/>
-	    </tr>
-
-	    <tr>
 		<td>password</td>
 		<td><input name="password"/>
 	    </tr>
