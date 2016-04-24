@@ -5,11 +5,18 @@
 	    <tr>
 		<td>name</td>
 		<td><input name="name"/>
+	   </tr>
+	   <tr>
+		<td>email</td>
+		<td><input name="email"/>
 	    </tr>
 
 	    <tr>
 		<td>password</td>
 		<td><input name="password"/>
+	    </tr>
+	    <tr>
+		<td><input type="button" name="submit"/></td>
 	    </tr>
 	</table>
     </body>
