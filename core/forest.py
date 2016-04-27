@@ -115,7 +115,7 @@ def _countRelevancy():
     atm = {}
     rel = {}
         
-        
+    
     for row in data:
         powerConsumes.append(float(row['powerConsume']))
         row.pop('powerConsume')
@@ -127,8 +127,19 @@ def _countRelevancy():
             atm[key].append(int(val))
     for key in rel.iterkeys():
         rel[key] = utiles.sim_pearson(atm[key],powerConsumes)
+
+    # 计算前七天的相关度
+    # rel['oneday'] = utiles.sim_pearson(powerConsumes[1:],powerConsumes[0:len(powerConsumes)-1])
+    # rel['twoday'] = utiles.sim_pearson(powerConsumes[2:],powerConsumes[0:len(powerConsumes)-2])
+    # rel['threeday'] = utiles.sim_pearson(powerConsumes[3:],powerConsumes[0:len(powerConsumes)-3])
+    # rel['fourday'] = utiles.sim_pearson(powerConsumes[4:],powerConsumes[0:len(powerConsumes)-4])
+    # rel['fiveday'] = utiles.sim_pearson(powerConsumes[5:],powerConsumes[0:len(powerConsumes)-5])
+    # rel['sixday'] = utiles.sim_pearson(powerConsumes[6:],powerConsumes[0:len(powerConsumes)-6])
+    # rel['sevenday'] = utiles.sim_pearson(powerConsumes[7:],powerConsumes[0:len(powerConsumes)-7])
+
     return rel
 relevancy = _countRelevancy()
+print
 relevancyList = {'威尔逊算法（全年数据）':relevancy}
 
 def calculateSimilarity(early,predict,rel=relevancy,minRel=0.2):
@@ -153,7 +164,7 @@ def APCompareSimilarity(a,b):
     '''
     用于AP对象的基于_similarity的比较
     
-    参数：    
+    参数:
     a(AP)    :    需要比较的AP对象1
     b(AP)    :    需要比较的AP对象2
     
@@ -193,6 +204,7 @@ class BaseForest(object):
     bf.setData(40,"2007-04-04",4)    
     '''
     def __init__(self):
+
         self.stage = Stage.INIT
         self.rel = relevancy
         self.normalize = normalizeAP
@@ -321,10 +333,16 @@ class BaseForest(object):
             self.similarityValue.append(simValue)
         
         self.keyList = self.forest[0].oneData.keys()
-        for key in self.keyList:
-            if self.rel.has_key(key) and abs(self.rel[key])<self.minRel:
-                self.keyList.remove(key)
+        print len(self.keyList)
+        index=len(self.keyList)-1
+        while index>=0:
+            if self.rel.has_key(self.keyList[index]) and abs(self.rel[self.keyList[index]])<self.minRel:
+                self.keyList.remove(self.keyList[index])
+            index -= 1
         
+        print self.keyList
+
+
         utiles.clearList(self.similarityList)
 #        for sim in self.similarity:
 #            simList = []
@@ -349,7 +367,6 @@ class BaseForest(object):
             for key in self.keyList:
                 data.append(fl.oneData[key])
             self.forestList.append(data)
-        
         
         self.stage = Stage.SIMILARITY
     
