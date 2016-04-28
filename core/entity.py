@@ -4,7 +4,6 @@ Created on Mon Apr 04 15:48:30 2016
 
 @author: Coco
 """
-import orm
 #powerConsume,daytype,airPressureAve,airPressureMax,airPressureMin,temperatureAve,temperatureMax,temperatureMin,,waterPressureAve,relativeHumidityAve,relativeHumidityMin,precipitation,smallEvaporation,largeEvaporation,windVelocityAve,windVelocityMax,windVelocityDirection,extremeWindVelocity,extremeWindVelocityDir,hoursOfSunshine
 order = ['date','cityName','year','month','day','daytype','detailNum','powerConsume','airPressureAve','airPressureMax','airPressureMin','temperatureAve','temperatureMax','temperatureMin','waterPressureAve','relativeHumidityAve','relativeHumidityMin','precipitation','smallEvaporation','largeEvaporation','windVelocityAve','windVelocityMax','windVelocityDirection','extremeWindVelocity','extremeWindVelocityDir','hoursOfSunshine']
 fieldDescription = {
@@ -37,34 +36,35 @@ fieldDescription = {
 }
 
 #print [fieldDescription.get(value).decode('utf-8') for value in order]
-class Atmosphere(orm.Model):
-    ast_his_id = orm.IntegerField(primary_key=True,updatable=False)
-    cityName = orm.StringField()
-    station_id = orm.StringField()
-    date = orm.DateField()
-    year = orm.IntegerField()
-    month = orm.IntegerField()
-    day = orm.IntegerField()
-    airPressureAve = orm.IntegerField()
-    airPressureMax = orm.IntegerField()
-    airPressureMin = orm.IntegerField()
-    temperatureAve = orm.IntegerField()
-    temperatureMax = orm.IntegerField()
-    temperatureMin = orm.IntegerField()
-    waterPressureAve = orm.IntegerField()
-    relativeHumidityAve = orm.IntegerField()
-    relativeHumidityMin = orm.IntegerField()
-    precipitation = orm.IntegerField()
-    smallEvaporation = orm.IntegerField()
-    largeEvaporation = orm.IntegerField()
-    windVelocityAve = orm.IntegerField()
-    windVelocityMax = orm.IntegerField()
-    windVelocityDirection = orm.IntegerField()
-    extremeWindVelocity = orm.IntegerField()
-    extremeWindVelocityDir = orm.IntegerField()
-    hoursOfSunshine = orm.IntegerField()
+class Atmosphere(object):
+    def __init__(self):
+        ast_his_id = orm.IntegerField(primary_key=True,updatable=False)
+        cityName = orm.StringField()
+        station_id = orm.StringField()
+        date = orm.DateField()
+        year = orm.IntegerField()
+        month = orm.IntegerField()
+        day = orm.IntegerField()
+        airPressureAve = orm.IntegerField()
+        airPressureMax = orm.IntegerField()
+        airPressureMin = orm.IntegerField()
+        temperatureAve = orm.IntegerField()
+        temperatureMax = orm.IntegerField()
+        temperatureMin = orm.IntegerField()
+        waterPressureAve = orm.IntegerField()
+        relativeHumidityAve = orm.IntegerField()
+        relativeHumidityMin = orm.IntegerField()
+        precipitation = orm.IntegerField()
+        smallEvaporation = orm.IntegerField()
+        largeEvaporation = orm.IntegerField()
+        windVelocityAve = orm.IntegerField()
+        windVelocityMax = orm.IntegerField()
+        windVelocityDirection = orm.IntegerField()
+        extremeWindVelocity = orm.IntegerField()
+        extremeWindVelocityDir = orm.IntegerField()
+        hoursOfSunshine = orm.IntegerField()
 
-class PowerConsume(orm.Model):
+class PowerConsume(object):
     his_id = orm.IntegerField(primary_key=True,updatable=False)
     cityName = orm.StringField()
     powerConsume = orm.FloatField()
@@ -97,3 +97,6 @@ class AP(Atmosphere,PowerConsume):
         'smallEvaporation':self.oneData['smallEvaporation'],'largeEvaporation':self.oneData['largeEvaporation'],'windVelocityAve':self.oneData['windVelocityAve'],'windVelocityMax':self.oneData['windVelocityMax'],\
         'extremeWindVelocity':self.oneData['extremeWindVelocity'],'hoursOfSunshine':self.oneData['hoursOfSunshine']
         }
+
+
+

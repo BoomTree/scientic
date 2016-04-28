@@ -114,7 +114,7 @@ def _countRelevancy():
     powerConsumes = []
     atm = {}
     rel = {}
-        
+    
     
     for row in data:
         powerConsumes.append(float(row['powerConsume']))
@@ -163,7 +163,6 @@ similarityList = {'欧几里得距离':calculateSimilarity}
 def APCompareSimilarity(a,b):
     '''
     用于AP对象的基于_similarity的比较
-    
     参数:
     a(AP)    :    需要比较的AP对象1
     b(AP)    :    需要比较的AP对象2
