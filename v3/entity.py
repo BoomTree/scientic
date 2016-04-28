@@ -113,7 +113,13 @@ class AP(object):
                 self._atmosphere[key] = int(value)
 
     def getSimilarityCompareData(self):
-        return dict(self._atmosphere,**self._daytype)
+        return dict(self.atmosphereN,**self._daytype)
+
+    def getPredictData(self):
+        temp = copy(self.atmosphereN.values())
+        temp.extend(self._daytype.values())
+        temp.extend(self.sevendayPowerConsumeN.values())
+        return temp
 
     @property
     def sevendayPowerConsume(self):

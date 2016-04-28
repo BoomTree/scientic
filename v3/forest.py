@@ -81,11 +81,11 @@ class relevancy(object):
     def normalizeRel(self,rel):
         sum = 0
         for value in rel.values():
-            sum += value
+            sum += abs(value)
 
         normalizedRel = {}
         for key,value in rel.iteritems():
-            normalizedRel[key] = rel[key]/sum
+            normalizedRel[key] = abs(rel[key])/sum
         return normalizedRel
 
 # a = relevancy()
@@ -170,13 +170,25 @@ class comparationEntity(object):
     def __init__(self,base,similarityEntitys):
         self._base = base
         self._similarityEntitys = similarityEntitys
+
+    def sortEntitys(self):
+        self._similarityEntitys.sort(compareSimilarityEntity)
+
     @property
     def base(self):
         return self._base
     @property
     def similarityEntitys(self):
         return self._similarityEntitys
-    
+
+def compareSimilarityEntity(se1,se2):
+    if se1.similarity > se2.similarity:
+        return -1
+    elif se1.similarity ==se2.similarity:
+        return 0
+    else:
+        return 1
+
 class similarityEntity(object):
     __slots__ = ('_ap','_similarity')
     def __init__(self,ap,similarity):
@@ -208,8 +220,15 @@ class similarity(object):
         '''
         sum = 0
         for key in self._rel.iterkeys():
-            sum += abs(self._rel[key]) * (1-early[key]+predict[key])**2
+            sum += self._rel[key] * (1-abs(early[key]+predict[key]))**2
         return sqrt(sum)
+
+class predictModule(object):
+    def __init__(object):
+        pass
+
+    def predict(self):
+        pass
 
 
 class forest(object):
@@ -228,6 +247,7 @@ class forest(object):
     def setProcess(self):
         self.daytypeWeight = 0.6
         self.minRel = 0.6
+        self.predictNum = 20
 
         self._relevancy = relevancy(self.minRel)
         self._normalization = normalization()
@@ -241,7 +261,7 @@ class forest(object):
         self._rel['Saturday'] = self.daytypeWeight
         self._rel['Sunday'] = self.daytypeWeight
 
-        self._similarity = similarity(self._rel)
+        self._similarity = similarity(self._relevancy.normalizeRel(self._rel))
 
     
     
@@ -333,9 +353,45 @@ class forest(object):
                 similarity = self._similarity.euclidean(forest.getSimilarityCompareData(),source.getSimilarityCompareData())
                 comparationEntitys.append(similarityEntity(source,similarity))
 
-            self.forestSimilarity.append(comparationEntity(forest,comparationEntitys))
+            for f in self._forest:
+                if f == forest:
+                    break
+                similarity = self._similarity.euclidean(forest.getSimilarityCompareData(),f.getSimilarityCompareData())
+                comparationEntitys.append(similarityEntity(f,similarity))
 
-    
+            ce = comparationEntity(forest,comparationEntitys)
+            ce.sortEntitys()
+            self.forestSimilarity.append(ce)
+
+    def predict(self):
+        for fs in self.forestSimilarity:
+            dataList = []
+            atmList = []
+
+            limit = 0
+            for se in fs.similarityEntitys:
+                if limit == self.predictNum:
+                    break
+                limit += 1
+
+                dataList.append(se.ap.getPredictData())
+                atmList.append(se.ap.powerConsume['real'])
+
+            print "---------"
+            print len(dataList)
+            print "---------"
+            print atmList
+
+            forestAtm = fs.base.getPredictData()
+            realPC = fs.base.powerConsume['real']
+            print "---------"
+            print forestAtm
+            print "---------"
+            print realPC
+            print "---------"
+            break
+
+
 
 
     @property
@@ -370,12 +426,37 @@ forest.setData(40,'2007-4-4',7)
 # one = forest.source[2]
 # print one.cityName,one.date,one.atmosphere,one.powerConsume,one.daytype
 forest.normalize()
-# one = forest.source[0]
+one = forest.source[0]
 # print one.sevendayPowerConsumeN,one.powerConsumeN,one.atmosphereN
+# print one.getSimilarityCompareData().keys()
 
-# print one.getSimilarityCompareData()
+
 forest.countSimilarity()
-one = forest.forestSimilarity[0]
-two = one.similarityEntitys[0]
-three = one.base
-print three.date,"\n------------------\n",two.similarity,"\n------------------\n",two.ap.date
+# one = forest.forestSimilarity[0]
+
+# two = one.similarityEntitys[0]
+# for se in one.similarityEntitys:
+#     print se.similarity
+# print one.base.date
+# print one.base.getSimilarityCompareData()
+# print one.similarityEntitys[0].ap.date
+# print one.similarityEntitys[0].ap.getSimilarityCompareData()
+
+# _relevancy = relevancy(0.6)
+# _normalization = normalization()
+
+# _rel = _relevancy.validAtmRel
+# _rel['Monday'] = 0.6
+# _rel['Tuesday'] = 0.6
+# _rel['Wednesday'] = 0.6
+# _rel['Thursday'] = 0.6
+# _rel['Friday'] = 0.6
+# _rel['Saturday'] = 0.6
+# _rel['Sunday'] = 0.6
+
+# _similarity = similarity(_relevancy.normalizeRel(_rel))
+# print "----------------"
+# similaritys = _similarity.euclidean(one.similarityEntitys[0].ap.getSimilarityCompareData(),one.base.getSimilarityCompareData())
+# print similaritys
+
+forest.predict()
