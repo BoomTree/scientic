@@ -12,7 +12,7 @@ class relevancy(object):
         data = db.select("select ah.airPressureAve,ah.airPressureMax,ah.airPressureMin,ah.temperatureAve,ah.temperatureMax,ah.temperatureMin,ah.waterPressureAve,ah.relativeHumidityAve,ah.relativeHumidityMin,ah.precipitation,ah.smallEvaporation,ah.largeEvaporation,ah.windVelocityAve,ah.windVelocityMax,ah.windVelocityDirection,ah.extremeWindVelocity,ah.extremeWindVelocityDir,ah.hoursOfSunshine,sh.daytype,sh.powerConsume from atmosphere_history ah INNER JOIN sw_history sh on ah.date = sh.date where sh.detailNum=96 ORDER BY ah.date") 
         powerConsumes = []
         atm = {}
-            
+
         self._atmRel = {}
 
         for row in data:
@@ -241,7 +241,6 @@ class forest(object):
         self._forest = []
         self._forestSimilarity = []
 
-
         self._expect = []
 
     def setProcess(self):
@@ -263,9 +262,6 @@ class forest(object):
 
         self._similarity = similarity(self._relevancy.normalizeRel(self._rel))
 
-    
-    
-    
     def setData(self,sourceNum,startDate,forestNum):
         '''
         参数：
