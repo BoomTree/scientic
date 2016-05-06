@@ -4,3 +4,4 @@
 *.ui
 .spyderproject
 *.log
+~*.xlsx

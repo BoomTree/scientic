@@ -4,13 +4,15 @@ Created on Mon Mar 28 14:40:54 2016
 
 @author: Coco
 """
-import db,entity,forest
+
+import forest
+
 # 测试 class engine
 
-#db.init(db_type = 'Mysql',db_driver = None,user='ly',passwd='ly',charset='utf8',db='powerforest')
+# db.init(db_type = 'Mysql',db_driver = None,user='ly',passwd='ly',charset='utf8',db='powerforest')
 # ---------------以下用于测试forest的可用性---------------
-bf = forest.BaseForest()
-bf.setData(90,"2007-11-30",7)
+bf = forest.forest()
+bf.setData(90, "2007-11-30", 7)
 bf.normalizeData()
 bf.countSimilarity()
 bf.predict()

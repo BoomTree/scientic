@@ -7,77 +7,82 @@ Created on Mon Apr 04 15:48:30 2016
 
 from copy import copy
 
-#powerConsume,daytype,airPressureAve,airPressureMax,airPressureMin,temperatureAve,temperatureMax,temperatureMin,,waterPressureAve,relativeHumidityAve,relativeHumidityMin,precipitation,smallEvaporation,largeEvaporation,windVelocityAve,windVelocityMax,windVelocityDirection,extremeWindVelocity,extremeWindVelocityDir,hoursOfSunshine
-order = ['date','cityName','year','month','day','daytype','detailNum','powerConsume','airPressureAve','airPressureMax','airPressureMin','temperatureAve','temperatureMax','temperatureMin','waterPressureAve','relativeHumidityAve','relativeHumidityMin','precipitation','smallEvaporation','largeEvaporation','windVelocityAve','windVelocityMax','windVelocityDirection','extremeWindVelocity','extremeWindVelocityDir','hoursOfSunshine']
+# powerConsume,daytype,airPressureAve,airPressureMax,airPressureMin,temperatureAve,temperatureMax,temperatureMin,,waterPressureAve,relativeHumidityAve,relativeHumidityMin,precipitation,smallEvaporation,largeEvaporation,windVelocityAve,windVelocityMax,windVelocityDirection,extremeWindVelocity,extremeWindVelocityDir,hoursOfSunshine
+order = ['date', 'cityName', 'year', 'month', 'day', 'daytype', 'detailNum', 'powerConsume', 'airPressureAve', 'airPressureMax', 'airPressureMin', 'temperatureAve', 'temperatureMax', 'temperatureMin', 'waterPressureAve',
+         'relativeHumidityAve', 'relativeHumidityMin', 'precipitation', 'smallEvaporation', 'largeEvaporation', 'windVelocityAve', 'windVelocityMax', 'windVelocityDirection', 'extremeWindVelocity', 'extremeWindVelocityDir', 'hoursOfSunshine']
 fieldDescription = {
-    'airPressureAve':'平均气压',
-    'airPressureMax':'日最高气压',
-    'airPressureMin':'日最低气压',
-    'temperatureAve':'平均气温',
-    'temperatureMax':'日最高气温',
-    'temperatureMin':'日最低气温',
-    'waterPressureAve':'平均水汽压',
-    'relativeHumidityAve':'平均相对湿度',
-    'relativeHumidityMin':'最小相对湿度',
-    'precipitation':'20-20时降水量',
-    'smallEvaporation':'小型蒸发量',
-    'largeEvaporation':'大型蒸发量',
-    'windVelocityAve':'平均风速',
-    'windVelocityMax':'最大风速',
-    'windVelocityDirection':'最大风速的风向',
-    'extremeWindVelocity':'极大风速',
-    'extremeWindVelocityDir':'极大风速的风向',
-    'hoursOfSunshine':'日照时数',
-    'cityName':'城市',
-    'powerConsume':'电力负荷',
-    'daytype':'星期',
-    'detailNum':'数据数量',
-    'date':'日期',
-    'year':'年',
-    'month':'月',
-    'day':'日'
+    'airPressureAve': '平均气压',
+    'airPressureMax': '日最高气压',
+    'airPressureMin': '日最低气压',
+    'temperatureAve': '平均气温',
+    'temperatureMax': '日最高气温',
+    'temperatureMin': '日最低气温',
+    'waterPressureAve': '平均水汽压',
+    'relativeHumidityAve': '平均相对湿度',
+    'relativeHumidityMin': '最小相对湿度',
+    'precipitation': '20-20时降水量',
+    'smallEvaporation': '小型蒸发量',
+    'largeEvaporation': '大型蒸发量',
+    'windVelocityAve': '平均风速',
+    'windVelocityMax': '最大风速',
+    'windVelocityDirection': '最大风速的风向',
+    'extremeWindVelocity': '极大风速',
+    'extremeWindVelocityDir': '极大风速的风向',
+    'hoursOfSunshine': '日照时数',
+    'cityName': '城市',
+    'powerConsume': '电力负荷',
+    'daytype': '星期',
+    'detailNum': '数据数量',
+    'date': '日期',
+    'year': '年',
+    'month': '月',
+    'day': '日'
 }
 atmosphere = ['airPressureAve',
-    'airPressureMax',
-    'airPressureMin',
-    'temperatureAve',
-    'temperatureMax',
-    'temperatureMin',
-    'waterPressureAve',
-    'relativeHumidityAve',
-    'relativeHumidityMin',
-    'precipitation',
-    'smallEvaporation',
-    'largeEvaporation',
-    'windVelocityAve',
-    'windVelocityMax',
-    'windVelocityDirection',
-    'extremeWindVelocity',
-    'extremeWindVelocityDir',
-    'hoursOfSunshine']
-atmosphereType = {'airPressureAve':'airPressure',
-    'airPressureMax':'airPressure',
-    'airPressureMin':'airPressure',
-    'temperatureAve':'temperature',
-    'temperatureMax':'temperature',
-    'temperatureMin':'temperature',
-    'waterPressureAve':'waterPressure',
-    'relativeHumidityAve':'relativeHumidity',
-    'relativeHumidityMin':'relativeHumidity',
-    'precipitation':'precipitation',
-    'smallEvaporation':'smallEvaporation',
-    'largeEvaporation':'largeEvaporation',
-    'windVelocityAve':'windVelocity',
-    'windVelocityMax':'windVelocity',
-    'windVelocityDirection':'windVelocityDirection',
-    'extremeWindVelocity':'extremeWindVelocity',
-    'extremeWindVelocityDir':'extremeWindVelocityDir',
-    'hoursOfSunshine':'hoursOfSunshine'
-}
+              'airPressureMax',
+              'airPressureMin',
+              'temperatureAve',
+              'temperatureMax',
+              'temperatureMin',
+              'waterPressureAve',
+              'relativeHumidityAve',
+              'relativeHumidityMin',
+              'precipitation',
+              'smallEvaporation',
+              'largeEvaporation',
+              'windVelocityAve',
+              'windVelocityMax',
+              'windVelocityDirection',
+              'extremeWindVelocity',
+              'extremeWindVelocityDir',
+              'hoursOfSunshine']
+atmosphereType = {'airPressureAve': 'airPressure',
+                  'airPressureMax': 'airPressure',
+                  'airPressureMin': 'airPressure',
+                  'temperatureAve': 'temperature',
+                  'temperatureMax': 'temperature',
+                  'temperatureMin': 'temperature',
+                  'waterPressureAve': 'waterPressure',
+                  'relativeHumidityAve': 'relativeHumidity',
+                  'relativeHumidityMin': 'relativeHumidity',
+                  'precipitation': 'precipitation',
+                  'smallEvaporation': 'smallEvaporation',
+                  'largeEvaporation': 'largeEvaporation',
+                  'windVelocityAve': 'windVelocity',
+                  'windVelocityMax': 'windVelocity',
+                  'windVelocityDirection': 'windVelocityDirection',
+                  'extremeWindVelocity': 'extremeWindVelocity',
+                  'extremeWindVelocityDir': 'extremeWindVelocityDir',
+                  'hoursOfSunshine': 'hoursOfSunshine'
+                  }
+
+
 class AP(object):
     validAtmosphere = []
-    __slots__ = ('atmosphereN','powerConsumeN','sevendayPowerConsumeN','_sevendayPowerConsume','_cityName','_date','_atmosphere','_powerConsume','_daytype')
-    def __init__(self,**args):
+    __slots__ = ('atmosphereN', 'powerConsumeN', 'sevendayPowerConsumeN',
+                 '_sevendayPowerConsume', '_cityName', '_date', '_atmosphere', '_powerConsume', '_daytype')
+
+    def __init__(self, **args):
         self._cityName = ''
         self._date = ''
         self._atmosphere = {}
@@ -85,9 +90,10 @@ class AP(object):
         self._sevendayPowerConsume = {}
 
         self._powerConsume = {}
-        self._daytype = {'Monday':0,'Tuesday':0,'Wednesday':0,'Thursday':0,'Friday':0,'Saturday':0,'Sunday':0}
+        self._daytype = {'Monday': 0, 'Tuesday': 0, 'Wednesday': 0,
+                         'Thursday': 0, 'Friday': 0, 'Saturday': 0, 'Sunday': 0}
 
-        for key,value in args.items():
+        for key, value in args.items():
             if key == "cityName":
                 self._cityName = value
             elif key == "date":
@@ -113,7 +119,7 @@ class AP(object):
                 self._atmosphere[key] = int(value)
 
     def getSimilarityCompareData(self):
-        return dict(self.atmosphereN,**self._daytype)
+        return dict(self.atmosphereN, **self._daytype)
 
     def getPredictData(self):
         temp = copy(self.atmosphereN.values())
@@ -124,8 +130,9 @@ class AP(object):
     @property
     def sevendayPowerConsume(self):
         return self._sevendayPowerConsume
+
     @sevendayPowerConsume.setter
-    def sevendayPowerConsume(self,spc):
+    def sevendayPowerConsume(self, spc):
         self._sevendayPowerConsume = {}
         self._sevendayPowerConsume['oneday'] = spc[6]
         self._sevendayPowerConsume['twoday'] = spc[5]
@@ -146,18 +153,19 @@ class AP(object):
     @property
     def atmosphere(self):
         return self._atmosphere
+
     @atmosphere.setter
-    def atmosphere(self,atmosphere):
+    def atmosphere(self, atmosphere):
         self._atmosphere = atmosphere
 
     @property
     def powerConsume(self):
         return self._powerConsume
+
     @powerConsume.setter
-    def powerConsume(self,powerConsume):
+    def powerConsume(self, powerConsume):
         self._powerConsume = powerConsume
 
     @property
     def daytype(self):
         return self._daytype
-    
