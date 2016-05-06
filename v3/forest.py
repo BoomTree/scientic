@@ -8,6 +8,7 @@ import entity
 
 from math import sqrt
 from datetime import datetime, timedelta
+from numpy import array
 
 
 class relevancy(object):
@@ -238,11 +239,23 @@ class similarity(object):
 
 
 class predictModule(object):
-    def __init__(object):
-        pass
+    def __init__(self):
+        from sklearn import svm, neighbors
 
-    def predict(self):
-        pass
+        self._model = svm.LinearSVC()
+        # self._model = svm.SVC()
+
+    def predict(self, dataList, pcList, forestAtm):
+        X = array(dataList)
+        Y = array(pcList)
+
+        self._model.fit(X, Y)
+
+        forest_X = array(forestAtm)
+        forest_X = forest_X.reshape(1, -1)
+        predictPC = self._model.predict(forest_X)
+        predictPC = predictPC[0]
+        return predictPC
 
 
 class forest(object):
@@ -275,6 +288,8 @@ class forest(object):
         self._rel['Sunday'] = self.daytypeWeight
 
         self._similarity = similarity(self._relevancy.normalizeRel(self._rel))
+
+        self._predictModule = predictModule()
 
     def setData(self, sourceNum, startDate, forestNum):
         '''
@@ -374,9 +389,11 @@ class forest(object):
             self.forestSimilarity.append(ce)
 
     def predict(self):
+        predictSum = 0
+        realSum = 0
         for fs in self.forestSimilarity:
             dataList = []
-            atmList = []
+            pcList = []
 
             limit = 0
             for se in fs.similarityEntitys:
@@ -385,21 +402,30 @@ class forest(object):
                 limit += 1
 
                 dataList.append(se.ap.getPredictData())
-                atmList.append(se.ap.powerConsume['real'])
+                pcList.append(int(se.ap.powerConsume['real'] * 1000000))
 
-            print "-----len(dataList)----"
-            print len(dataList)
-            print "-----atmList----"
-            print atmList
+            # print "-----len(dataList)----"
+            # print len(dataList)
+            # print "-----pcList----"
+            # print pcList
 
             forestAtm = fs.base.getPredictData()
             realPC = fs.base.powerConsume['real']
-            print "-----forestAtm----"
-            print forestAtm
-            print "-----realPC----"
-            print realPC
-            print "---------"
-            break
+            # print "-----forestAtm----"
+            # print forestAtm
+            # print "-----realPC----"
+            # print realPC
+            # print "---------"
+            predictPC = self._predictModule.predict(dataList, pcList, forestAtm) / 1000000.0
+
+            realSum += realPC
+            predictSum += predictPC
+            fs.base.powerConsume['predict'] = predictPC
+
+            print realPC, ":", predictPC, ":", (predictPC - realPC) / realPC
+
+        print "-----------------"
+        print realSum, ":", predictSum, ":", (predictSum - realSum) / realSum
 
     @property
     def relevancy(self):
