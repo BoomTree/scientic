@@ -80,9 +80,11 @@ atmosphereType = {'airPressureAve': 'airPressure',
 class AP(object):
     validAtmosphere = []
     __slots__ = ('atmosphereN', 'powerConsumeN', 'sevendayPowerConsumeN',
-                 '_sevendayPowerConsume', '_cityName', '_date', '_atmosphere', '_powerConsume', '_daytype')
+                 '_sevendayPowerConsume', '_cityName', '_date', '_atmosphere', '_powerConsume', '_daytype', '_pc_id', '_ah_id')
 
     def __init__(self, **args):
+        self._pc_id = 0
+        self._ah_id = 0
         self._cityName = ''
         self._date = ''
         self._atmosphere = {}
@@ -96,6 +98,10 @@ class AP(object):
         for key, value in args.items():
             if key == "cityName":
                 self._cityName = value
+            elif key == "ah_id":
+                self._ah_id = value
+            elif key == "pc_id":
+                self._pc_id = value
             elif key == "date":
                 self._date = value
             elif key == "powerConsume":
@@ -121,10 +127,14 @@ class AP(object):
     def getSimilarityCompareData(self):
         return dict(self.atmosphereN, **self._daytype)
 
-    def getPredictData(self):
-        temp = copy(self.atmosphereN.values())
-        temp.extend(self._daytype.values())
-        temp.extend(self.sevendayPowerConsumeN.values())
+    def getPredictData(self, content):
+        temp = []
+        if 'A' in content:
+            temp.extend(self.atmosphereN.values())
+        if 'D' in content:
+            temp.extend(self._daytype.values())
+        if 'P' in content:
+            temp.extend(self.sevendayPowerConsumeN.values())
         return temp
 
     @property
@@ -169,3 +179,19 @@ class AP(object):
     @property
     def daytype(self):
         return self._daytype
+
+    @property
+    def pc_id(self):
+        return self._pc_id
+
+    @pc_id.setter
+    def pc_id(self, pc_id):
+        self._pc_id = pc_id
+
+    @property
+    def ah_id(self):
+        return self._ah_id
+
+    @ah_id.setter
+    def ah_id(self, ah_id):
+        self._ah_id = ah_id

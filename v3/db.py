@@ -35,7 +35,8 @@ def _profiling(start, sql=''):
 _db_connect = _dummy_connect()
 _db_convert = '?'
 
-def init_connect(connect,convert='%?'):
+
+def init_connect(connect, convert='?'):
     _log("init database connect.....")
     global _db_connect , _db_convert
     _db_connect = connect
@@ -173,19 +174,20 @@ def select_int(sql,*args):
         raise MutiColumnsError("expect only one column")
     return results.values()[0]
 
+
 def select(sql,*args):
     return _select(sql,False,*args)
 
-def _update(sql,args,post_func = None):
+
+def _update(sql, args, post_func=None):
     cur = None
     if _db_convert != '?':
-        sql = sql.replace('?',_db_convert)
+        sql = sql.replace('?', _db_convert)
     start = time.time()
     try:
         cur = _db_ctx.cursor()
-        cur.execute(sql,args)
+        cur.execute(sql, args)
         row = cur.rowcount()
-        print row
         post_func is not None and post_func()
         return row
     except:
@@ -193,22 +195,55 @@ def _update(sql,args,post_func = None):
     finally:
         if cur:
             cur.close()
-        _profiling(start,sql)
+        _profiling(start, sql)
 
-def insert(table,**kw):
-    cols,args = zip(*kw.iteritems)
-    sql = "INSERT INTO %s (%s) VALUES(%s)" % (table,','.join(cols),','.join([_db_convert for i in range(len(cols))]))
-    return _update(sql,args)
-def update(sql,*args):
-    return _update(sql,args)
+
+def insert(table, **kw):
+    cols, args = zip(*kw.iteritems())
+    sql = "INSERT INTO %s (%s) VALUES(%s)" % (
+        table, ','.join(cols), ','.join([_db_convert for i in range(len(cols))]))
+    return _update(sql, args)
+
+
+def _insert(sql, args, post_func=None):
+    cur = None
+    if _db_convert != '?':
+        sql = sql.replace('?', _db_convert)
+    start = time.time()
+    try:
+        cur = _db_ctx.cursor()
+        cur.execute(sql, args)
+        id = int(cur.lastrowid)
+        post_func is not None and post_func()
+        return id
+    except MySQLdb.Error, e:
+        print e.args[0], ":", e.args[1]
+    finally:
+        if cur:
+            cur.close()
+        _profiling(start, sql)
+
+
+def insertGetId(table, **kw):
+    cols, args = zip(*kw.iteritems())
+    sql = "INSERT INTO %s (%s) VALUES(%s)" % (table, ','.join(cols), ','.join([_db_convert for i in range(len(cols))]))
+    return _insert(sql, args)
+
+
+def update(sql, *args):
+    return _update(sql, args)
+
+
 def commit():
     try:
         _db_ctx.connection.commit()
     except:
         rollback()
         raise
+
+
 def update_kw(table, where, *args, **kw):
-    if len(kw)==0:
+    if len(kw) == 0:
         raise ValueError('No kw args.')
     sqls = ['update', table, 'set']
     params = []
@@ -223,8 +258,10 @@ def update_kw(table, where, *args, **kw):
     params.extend(args)
     return update(sql, *params)
 
+
 def rollback():
     _db_ctx.connection.rollback()
 
 
-init(db_type = 'Mysql',db_driver = None,user='ly',passwd='ly',charset='utf8',db='powerforest')
+init(db_type='Mysql', db_driver=None, user='ly',
+     passwd='ly', charset='utf8', db='powerforest')

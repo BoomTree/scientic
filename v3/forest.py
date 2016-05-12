@@ -176,11 +176,12 @@ class normalization(object):
 
 
 class comparationEntity(object):
-    __slots__ = ('_base', '_similarityEntitys')
+    __slots__ = ('_base', '_similarityEntitys', 'predictPCs')
 
     def __init__(self, base, similarityEntitys):
         self._base = base
         self._similarityEntitys = similarityEntitys
+        self.predictPCs = {}
 
     def sortEntitys(self):
         self._similarityEntitys.sort(compareSimilarityEntity)
@@ -240,15 +241,15 @@ class similarity(object):
 
 class predictModule(object):
     def __init__(self):
-        from sklearn import svm, neighbors
-
-        self._model = svm.LinearSVC()
+        pass
         # self._model = svm.SVC()
 
     def predict(self, dataList, pcList, forestAtm):
         X = array(dataList)
         Y = array(pcList)
 
+        from sklearn import svm, neighbors
+        self._model = svm.LinearSVC()
         self._model.fit(X, Y)
 
         forest_X = array(forestAtm)
@@ -271,7 +272,7 @@ class forest(object):
         self._expect = []
 
     def setProcess(self):
-        self.daytypeWeight = 0.6
+        self.daytypeWeight = 0.05
         self.minRel = 0.6
         self.predictNum = 20
 
@@ -291,27 +292,27 @@ class forest(object):
 
         self._predictModule = predictModule()
 
-    def setData(self, sourceNum, startDate, forestNum):
+    def setData(self, startDate, forestNum):
+        self.forestNum = forestNum
         '''
         参数：
-        sourceNum(int)       :    历史日的天数
         startDate(str)       :    需要预测的日期（格式：'2007-4-5'）
         forestNum(str)       :    需要预测的天数，包含startDate向后数forestNum天
         '''
 
         d = datetime.strptime(startDate, "%Y-%m-%d")
-        sevenday = (d - timedelta(sourceNum + 7)).strftime("%Y-%m-%d")
+        sevenday = datetime(2007, 1, 1)
         # 计算历史日的第一天的日期
-        preDate = (d - timedelta(sourceNum)).strftime("%Y-%m-%d")
+        preDate = datetime(2007, 1, 8)
         # 计算待预测日的最后一天的日期
         endDate = (d + timedelta(forestNum - 1)).strftime("%Y-%m-%d")
         # 从数据库获取历史日 元数据 sourceDates(list(dict))
         sevenDates = db.select("select powerConsume from powerConsume sh where date>=? and date<? ORDER BY date", sevenday, preDate)
         # 从数据库获取历史日 元数据 sourceDates(list(dict))
-        sourceDates = db.select("select ah.*, sh.daytype, sh.powerConsume from atmosphere_history ah INNER JOIN powerConsume sh on ah.date = sh.date where ah.date>=? and ah.date<? ORDER BY ah.date", preDate, startDate)
+        sourceDates = db.select("select ah.*, sh.daytype, sh.powerConsume, sh.pc_id from atmosphere_history ah INNER JOIN powerConsume sh on ah.date = sh.date where ah.date>=? and ah.date<? ORDER BY ah.date", preDate, startDate)
         # 从数据库获取待预测日 元数据 forestDates(list(dict))
-        forestDates = db.select("select ah.*, sh.daytype, sh.powerConsume from atmosphere_history ah INNER JOIN powerConsume sh on ah.date = sh.date where ah.date>=? and ah.date<=? ORDER BY ah.date", startDate, endDate)
-
+        forestDates = db.select("select ah.*, sh.daytype, sh.powerConsume, sh.pc_id from atmosphere_history ah INNER JOIN powerConsume sh on ah.date = sh.date where ah.date>=? and ah.date<=? ORDER BY ah.date", startDate, endDate)
+        # print forestDates[0]
         utiles.clearList(self._powerConsumes)
         utiles.clearList(self._expect)
         utiles.clearList(self._expect)
@@ -389,43 +390,58 @@ class forest(object):
             self.forestSimilarity.append(ce)
 
     def predict(self):
-        predictSum = 0
         realSum = 0
-        for fs in self.forestSimilarity:
-            dataList = []
+        predictSum = 0
+        rate1Sum = 0
+        rate2Sum = 0
+        for index in range(len(self._forestSimilarity)):
+            ADPDataList = []
+            APDataList = []
+            ADataList = []
+            PDataList = []
+
             pcList = []
 
             limit = 0
-            for se in fs.similarityEntitys:
+            for se in self._forestSimilarity[index].similarityEntitys:
                 if limit == self.predictNum:
                     break
                 limit += 1
 
-                dataList.append(se.ap.getPredictData())
+                ADPDataList.append(se.ap.getPredictData({'A', 'D', 'P'}))
+                APDataList.append(se.ap.getPredictData({'A', 'P'}))
+                ADataList.append(se.ap.getPredictData({'A'}))
+                PDataList.append(se.ap.getPredictData({'P'}))
                 pcList.append(int(se.ap.powerConsume['real'] * 1000000))
 
-            # print "-----len(dataList)----"
-            # print len(dataList)
-            # print "-----pcList----"
-            # print pcList
+            forestADP = self._forestSimilarity[index].base.getPredictData({'A', 'D', 'P'})
+            forestAP = self._forestSimilarity[index].base.getPredictData({'A', 'P'})
+            forestA = self._forestSimilarity[index].base.getPredictData({'A'})
+            forestP = self._forestSimilarity[index].base.getPredictData({'P'})
 
-            forestAtm = fs.base.getPredictData()
-            realPC = fs.base.powerConsume['real']
-            # print "-----forestAtm----"
-            # print forestAtm
-            # print "-----realPC----"
-            # print realPC
-            # print "---------"
-            predictPC = self._predictModule.predict(dataList, pcList, forestAtm) / 1000000.0
+            self._forestSimilarity[index].predictPCs['ADP'] = self._predictModule.predict(ADPDataList, pcList, forestADP) / 1000000.0
+            self._forestSimilarity[index].predictPCs['AP'] = self._predictModule.predict(APDataList, pcList, forestAP) / 1000000.0
+            self._forestSimilarity[index].predictPCs['A'] = self._predictModule.predict(ADataList, pcList, forestA) / 1000000.0
+            self._forestSimilarity[index].predictPCs['P'] = self._predictModule.predict(PDataList, pcList, forestP) / 1000000.0
 
-            realSum += realPC
-            predictSum += predictPC
-            fs.base.powerConsume['predict'] = predictPC
+            if index is 0:
+                preDayPC = self._source[len(self._source) - 1].powerConsume['real']
+            else:
+                preDayPC = self._forestSimilarity[index - 1].base.powerConsume['predict']
 
-            print realPC, ":", predictPC, ":", (predictPC - realPC) / realPC
+            if abs(self._forestSimilarity[index].predictPCs['ADP'] - preDayPC) / preDayPC > 0.1:
+                self._forestSimilarity[index].base.powerConsume['predict'] = self._forestSimilarity[index].predictPCs['AP']
+                predictSum += self._forestSimilarity[index].predictPCs['AP']
+            else:
+                self._forestSimilarity[index].base.powerConsume['predict'] = self._forestSimilarity[index].predictPCs['ADP']
+            # print self._forestSimilarity[index].predictPCs['ADP'], ":", self._forestSimilarity[index].base.powerConsume['real'], (self._forestSimilarity[index].predictPCs['ADP'] - self._forestSimilarity[index].base.powerConsume['real']) / self._forestSimilarity[index].base.powerConsume['real']
+            # print self._forestSimilarity[index].predictPCs['AP'], ":", self._forestSimilarity[index].base.powerConsume['real'], abs((self._forestSimilarity[index].predictPCs['AP'] - self._forestSimilarity[index].base.powerConsume['real']) / self._forestSimilarity[index].base.powerConsume['real'])
+            predictSum += self._forestSimilarity[index].predictPCs['ADP']
+            realSum += self._forestSimilarity[index].base.powerConsume['real']
+            rate1Sum += abs((self._forestSimilarity[index].base.powerConsume['predict'] - self._forestSimilarity[index].base.powerConsume['real']) / self._forestSimilarity[index].base.powerConsume['real'])
+            rate2Sum += abs((self._forestSimilarity[index].predictPCs['AP'] - self._forestSimilarity[index].base.powerConsume['real']) / self._forestSimilarity[index].base.powerConsume['real'])
 
-        print "-----------------"
-        print realSum, ":", predictSum, ":", (predictSum - realSum) / realSum
+        self.predict_rate = rate2Sum / self.forestNum
 
     @property
     def relevancy(self):
@@ -459,44 +475,45 @@ class forest(object):
     def forestSimilarity(self):
         return self._forestSimilarity
 
-forest = forest()
-# print entity.AP.validAtmosphere
-# forest.relevancy.show()
-forest.setData(40, '2007-4-4', 7)
-# one = forest.source[2]
-# print one.cityName, one.date, one.atmosphere, one.powerConsume, one.daytype
-forest.normalize()
-one = forest.source[0]
-# print one.sevendayPowerConsumeN, one.powerConsumeN, one.atmosphereN
-# print one.getSimilarityCompareData().keys()
 
+def doPredict():
+    f = forest()
+    # print entity.AP.validAtmosphere
+    # f.relevancy.show()
+    f.setData('2007-1-21', 345)
+    # one = f.source[2]
+    # print one.cityName, one.date, one.atmosphere, one.powerConsume, one.daytype
+    f.normalize()
+    # one = f.source[0]
+    # print one.sevendayPowerConsumeN, one.powerConsumeN, one.atmosphereN
+    # print one.getSimilarityCompareData().keys()
 
-forest.countSimilarity()
-# one = forest.forestSimilarity[0]
+    f.countSimilarity()
+    # one = f.forestSimilarity[0]
 
-# two = one.similarityEntitys[0]
-# for se in one.similarityEntitys:
-#     print se.similarity
-# print one.base.date
-# print one.base.getSimilarityCompareData()
-# print one.similarityEntitys[0].ap.date
-# print one.similarityEntitys[0].ap.getSimilarityCompareData()
+    # two = one.similarityEntitys[0]
+    # for se in one.similarityEntitys:
+    #     print se.similarity
+    # print one.base.date
+    # print one.base.getSimilarityCompareData()
+    # print one.similarityEntitys[0].ap.date
+    # print one.similarityEntitys[0].ap.getSimilarityCompareData()
 
-# _relevancy = relevancy(0.6)
-# _normalization = normalization()
+    # _relevancy = relevancy(0.6)
+    # _normalization = normalization()
 
-# _rel = _relevancy.validAtmRel
-# _rel['Monday'] = 0.6
-# _rel['Tuesday'] = 0.6
-# _rel['Wednesday'] = 0.6
-# _rel['Thursday'] = 0.6
-# _rel['Friday'] = 0.6
-# _rel['Saturday'] = 0.6
-# _rel['Sunday'] = 0.6
+    # _rel = _relevancy.validAtmRel
+    # _rel['Monday'] = 0.6
+    # _rel['Tuesday'] = 0.6
+    # _rel['Wednesday'] = 0.6
+    # _rel['Thursday'] = 0.6
+    # _rel['Friday'] = 0.6
+    # _rel['Saturday'] = 0.6
+    # _rel['Sunday'] = 0.6
 
-# _similarity = similarity(_relevancy.normalizeRel(_rel))
-# print "----------------"
-# similaritys = _similarity.euclidean(one.similarityEntitys[0].ap.getSimilarityCompareData(), one.base.getSimilarityCompareData())
-# print similaritys
+    # _similarity = similarity(_relevancy.normalizeRel(_rel))
+    # print "----------------"
+    # similaritys = _similarity.euclidean(one.similarityEntitys[0].ap.getSimilarityCompareData(), one.base.getSimilarityCompareData())
+    # print similaritys
 
-forest.predict()
+    f.predict()

@@ -48,34 +48,39 @@ class Dict(dict):
 
     def __setattr__(self, key, value):
         self[key] = value
-        
+
+
 def enum(**enums):
     return type('Enum', (), enums)
-    
-def multipl(a,b):
-    sumofab=0.0
+
+
+def multipl(a, b):
+    sumofab = 0.0
     for i in range(len(a)):
-        temp=a[i]*b[i]
-        sumofab+=temp
+        temp = a[i] * b[i]
+        sumofab += temp
     return sumofab
 
-def sim_pearson(p1,p2):
+
+def sim_pearson(p1, p2):
     n = len(p1)
-    #求所有偏好的和
+    # 求所有偏好的和
     sum1 = sum(p1)
     sum2 = sum(p2)
-    #求平方和
-    sum1Sq  = sum([pow(val,2) for val in p1])
-    sum2Sq  = sum([pow(val,2) for val in p2])
-    #求乘积和
-    pSum = multipl(p1,p2)
-    #计算皮尔逊相关系数
-    num = pSum - (float(sum1)*float(sum2)/n)
-    den = sqrt((sum1Sq - float(pow(sum1,2))/n) * (sum2Sq - float(pow(sum2,2))/n))
+    # 求平方和
+    sum1Sq = sum([pow(val, 2) for val in p1])
+    sum2Sq = sum([pow(val, 2) for val in p2])
+    # 求乘积和
+    pSum = multipl(p1, p2)
+    # 计算皮尔逊相关系数
+    num = pSum - (float(sum1) * float(sum2) / n)
+    den = sqrt(
+        (sum1Sq - float(pow(sum1, 2)) / n) * (sum2Sq - float(pow(sum2, 2)) / n))
     if den == 0:
         return 0
-    r = num/den
+    r = num / den
     return r
+
 
 def clearList(list):
     del list[:]
